@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="2;url={{ url_for('results') }}" />
+    <title>Generating Your Word Cloud</title>
+    <script>
+      function checkStatus() {
+        fetch("/generation-status")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.complete) {
+              if (data.error) {
+                window.location.href =
+                  "/?error=" + encodeURIComponent(data.error);
+              } else {
+                window.location.href = "/results";
+              }
+            } else {
+              setTimeout(checkStatus, 2000);
+            }
+          });
+      }
+      // Start checking status
+      setTimeout(checkStatus, 2000);
+    </script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Generating Your Word Cloud...</h1>
+      <div class="spinner"></div>
+      <p>This may take a minute while we fetch your Spotify data and lyrics.</p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your Word Cloud Results</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Your Spotify Word Cloud</h1>
+      <img
+        src="{{ url_for('static', filename=wordcloud_file) }}"
+        alt="Generated Word Cloud"
+        id="wordcloud-image"
+      />
+
+      <div class="actions">
+        <a href="{{ url_for('download') }}" class="btn">Download Image</a>
+        <a href="{{ url_for('index') }}" class="btn">Create Another</a>
+      </div>
+    </div>
+
+    <script>
+      // Verify image loads successfully
+      window.onload = function () {
+        const img = document.getElementById("wordcloud-img");
+        img.onerror = function () {
+          this.style.display = "none";
+          document.getElementById("error-msg").style.display = "block";
+        };
+      };
+    </script>
+  </body>
+</html>

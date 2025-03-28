@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Lyrics Word Cloud</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Spotify Lyrics Word Cloud</h1>
+      <p>Generate a beautiful word cloud from your top Spotify songs</p>
+
+      <form method="POST" action="/">
+        <div class="form-group">
+          <label for="time_range">Time Range:</label>
+          <select name="time_range" id="time_range">
+            <option value="short_term">Last 4 Weeks</option>
+            <option value="medium_term" selected>Last 6 Months</option>
+            <option value="long_term">All Time</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="num_songs">Number of Songs:</label>
+          <input
+            type="range"
+            name="num_songs"
+            id="num_songs"
+            min="10"
+            max="50"
+            value="25"
+          />
+          <span id="song_count">25</span>
+        </div>
+
+        <button type="submit">Generate Word Cloud</button>
+      </form>
+    </div>
+
+    <script>
+      // Update song count display
+      document
+        .getElementById("num_songs")
+        .addEventListener("input", function () {
+          document.getElementById("song_count").textContent = this.value;
+        });
+    </script>
+  </body>
+</html>

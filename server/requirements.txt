@@ -1,0 +1,8 @@
+flask
+flask-cors
+spotipy
+lyricsgenius
+wordcloud
+matplotlib
+pillow
+numpy

@@ -1,0 +1,11 @@
+We are creating an app that connects to user spotify and return a wordcloud of user's top song lyrics
+
+These are the steps to make the initial app -
+
+1. Connecting with user Spotify
+2. Extracting top songs of user through Spotify API
+3. Getting lyrics of top songs using Genius / Musixmatch API
+4. Displaying Wordcloud to users
+
+
+Once we have enough data, we will work on (mostly likely) a matching algorithm to connect users with similar lyrics.
