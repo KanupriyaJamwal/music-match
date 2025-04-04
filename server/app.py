@@ -13,21 +13,21 @@ app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
         "origins": [
-            "https://kanupriyajamwal.github.io",  # GitHub Pages
-            "http://localhost:3000"  # For development
-        ]
+            "https://kanupriyajamwal.github.io",  # Your GitHub Pages URL
+            "http://localhost:3000"               # For local development
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],    # Allowed HTTP methods
+        "allow_headers": ["Content-Type"]         # Allowed headers
     }
 })
+
 # Temporary directory for processing
 PROCESSING_DIR = os.path.join(tempfile.gettempdir(), 'spotify_wordcloud')
 os.makedirs(PROCESSING_DIR, exist_ok=True)
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
-    return jsonify({
-        "status": "success",
-        "message": "API is working"
-    })
+    return jsonify({"status": "success", "message": "CORS fixed!"})
 
 # Add a root route for health checks
 @app.route('/')
