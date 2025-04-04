@@ -84,7 +84,8 @@ def generate_wordcloud():
         return jsonify({
             'success': True,
             'output': result.stdout,
-            'files': output_files
+            'files': output_files,
+            "wordcloud": "base64_image_data"
         })
         
     except Exception as e:

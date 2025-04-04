@@ -48,5 +48,14 @@ const fetchAPI = async (endpoint, method = "GET", body = null) => {
 // Public API Methods
 export const fetchData = () => fetchAPI("/api/data");
 
-export const generateWordcloud = (spotifyToken) =>
-  fetchAPI("/generate_wordcloud", "POST", { token: spotifyToken });
+export const generateWordcloud = async (spotifyToken) => {
+  const response = await fetch(`${API_BASE}/generate_wordcloud`, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token: spotifyToken }),
+  });
+  return response.json();
+};
