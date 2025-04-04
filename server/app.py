@@ -8,9 +8,10 @@ import shutil
 import time
 
 app = Flask(__name__)
+
 # Allow your GitHub Pages domain
 CORS(app, resources={
-    r"/api/*": {
+    r"/services/*": {
         "origins": [
             "https://kanupriyajamwal.github.io",
             "http://localhost:3000"  # For development
@@ -20,6 +21,12 @@ CORS(app, resources={
 # Temporary directory for processing
 PROCESSING_DIR = os.path.join(tempfile.gettempdir(), 'spotify_wordcloud')
 os.makedirs(PROCESSING_DIR, exist_ok=True)
+
+
+# Add a root route for health checks
+@app.route('/')
+def home():
+    return jsonify({"status": "active", "message": "WordCloud Generator API"})
 
 @app.route('/generate_wordcloud', methods=['POST'])
 def generate_wordcloud():
@@ -76,5 +83,6 @@ def download_file(request_id, filename):
         
     return send_file(filepath, as_attachment=True)
 
+port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT not set
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=port, debug=True)
