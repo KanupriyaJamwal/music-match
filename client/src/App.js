@@ -3,6 +3,7 @@ import Auth from "./components/Auth";
 import Results from "./components/Results";
 import "./styles.css";
 import { fetchData } from "./services/api";
+import { handleGenerate } from "./services/api";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,6 +15,9 @@ function App() {
 
   useEffect(() => {
     fetchData()
+      .then((data) => setData(data))
+      .catch(console.error);
+    handleGenerate()
       .then((data) => setData(data))
       .catch(console.error);
   }, []);

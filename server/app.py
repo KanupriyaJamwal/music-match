@@ -14,12 +14,14 @@ app = Flask(__name__)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 cors = CORS(app, resources={
-    r"/api/*": {
-        "origins": ["https://kanupriyajamwal.github.io", "http://localhost:3000"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["*"],  # Temporary wildcard for testing
-        "supports_credentials": True,
-        "max_age": 86400
+    r"/*": {  # Apply to ALL routes
+        "origins": [
+            "https://kanupriyajamwal.github.io",
+            "http://localhost:3000"
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
     }
 })
 
@@ -44,8 +46,8 @@ def api_data():
 
 # Add a root route for health checks
 @app.route('/')
-def home():
-    return jsonify({"status": "active", "message": "WordCloud Generator API"})
+def health_check():
+    return jsonify({"status": "active", "message": "API is running"}), 200
 
 @app.route('/generate_wordcloud', methods=['POST'])
 def generate_wordcloud():

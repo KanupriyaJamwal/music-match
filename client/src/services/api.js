@@ -36,3 +36,30 @@ export const fetchData = async () => {
     throw error;
   }
 };
+
+const handleGenerate = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/generate_wordcloud`,
+      {
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${spotifyAccessToken}`, // Add if using auth
+        },
+        body: JSON.stringify({}), // Add required payload
+      }
+    );
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Generation failed:", {
+      message: error.message,
+      stack: error.stack,
+    });
+    throw error;
+  }
+};
