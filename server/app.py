@@ -34,6 +34,8 @@ os.makedirs(PROCESSING_DIR, exist_ok=True)
 def inject_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
     response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
 
 
@@ -44,44 +46,35 @@ def api_data():
         return jsonify({}), 200
     return jsonify({"status": "success", "data": "your_data"})
 
-@app.route('/generate_wordcloud', methods=['OPTIONS'])
-def generate_wordcloud():
-    if request.method == 'OPTIONS':
-        return jsonify({}), 200
-    return jsonify({"status": "success", "result": "wordcloud_data"})
-
 # Add a root route for health checks
 @app.route('/')
 def health_check():
     return jsonify({"status": "active", "message": "API is running"}), 200
 
-@app.route('/generate_wordcloud', methods=['POST'])
+@app.route('/generate_wordcloud', methods=['POST', 'OPTIONS'])  # Combined methods
 def generate_wordcloud():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+        
     try:
-        # Create a unique directory for this request
+        # Your existing POST logic here
         request_id = str(int(time.time()))
         work_dir = os.path.join(PROCESSING_DIR, request_id)
         os.makedirs(work_dir, exist_ok=True)
         
-        # Copy the script to the working directory
         script_path = os.path.join(work_dir, 'spotify_wordcloud.py')
         shutil.copyfile('spotify_wordcloud.py', script_path)
         
-        # Run the Python script
         result = subprocess.run(
-            [sys.executable, script_path],  # Use sys.executable instead of 'python'
+            [sys.executable, script_path],
             capture_output=True,
             text=True,
             cwd=work_dir
         )
         
         if result.returncode != 0:
-            return jsonify({
-                'success': False,
-                'error': result.stderr
-            }), 500
+            return jsonify({'success': False, 'error': result.stderr}), 500
             
-        # Check for output files
         output_files = {}
         for filename in ['top_50_lyrics.txt', 'lyrics_wordcloud.png']:
             filepath = os.path.join(work_dir, filename)
@@ -95,10 +88,7 @@ def generate_wordcloud():
         })
         
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/download/<request_id>/<filename>', methods=['GET'])
 def download_file(request_id, filename):
