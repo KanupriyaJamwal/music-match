@@ -100,6 +100,7 @@ def download_file(request_id, filename):
         
     return send_file(filepath, as_attachment=True)
 
-port = int(os.environ.get("PORT", 5001))  # Default to 5000 if PORT not set
+port = int(os.environ.get("PORT", 5001))  # Default to 5001 if PORT not set
 if __name__ == '__main__':
-    app.run(port=port)
+    # Add host='0.0.0.0' to allow external connections
+    app.run(host='0.0.0.0', port=5001, debug=True)
