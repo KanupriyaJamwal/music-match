@@ -63,3 +63,25 @@ const handleGenerate = async () => {
     throw error;
   }
 };
+
+export const generateWordcloud = async (spotifyAccessToken) => {
+  // Add parameter
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/generate_wordcloud`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${spotifyAccessToken}`, // Now properly defined
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Wordcloud generation failed:", error);
+    throw error;
+  }
+};
