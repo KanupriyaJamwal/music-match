@@ -10,15 +10,19 @@ import time
 app = Flask(__name__)
 
 # Allow your GitHub Pages domain
-# ======== CRITICAL CORS SETUP ========
-app.config['CORS_HEADERS'] = 'Content-Type'
-
-# ===== CRITICAL CORS SETUP =====
+# ===== NUCLEAR CORS SOLUTION =====
+app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 CORS(app, resources={
-    r"/generate_wordcloud": {
-        "origins": ["http://localhost:3000", "https://kanupriyajamwal.github.io"],
-        "methods": ["POST", "OPTIONS"],  # Must include OPTIONS
-        "allow_headers": ["Content-Type"]
+    r"/*": {
+        "origins": [
+            "http://localhost:3000",          # Development
+            "https://kanupriyajamwal.github.io"  # Production
+        ],
+        "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+        "allow_headers": ["*"],
+        "expose_headers": ["*"],
+        "supports_credentials": True,
+        "max_age": 600
     }
 })
 
@@ -27,30 +31,29 @@ PROCESSING_DIR = os.path.join(tempfile.gettempdir(), 'spotify_wordcloud')
 os.makedirs(PROCESSING_DIR, exist_ok=True)
 
 @app.after_request
-def after_request(response):
-    # Manually set headers as final fallback
-    response.headers.add('Access-Control-Allow-Origin', 'https://kanupriyajamwal.github.io')
-    response.headers.add('Access-Control-Allow-Headers', '*')
-    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
+def inject_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
     return response
 
+
+# ===== API ENDPOINTS =====
 @app.route('/api/data', methods=['GET', 'OPTIONS'])
 def api_data():
     if request.method == 'OPTIONS':
-        return jsonify({"status": "preflight"}), 200  # Explicit OPTIONS response
-    return jsonify({"data": "Successful CORS response"})
+        return jsonify({}), 200
+    return jsonify({"status": "success", "data": "your_data"})
+
+@app.route('/generate_wordcloud', methods=['OPTIONS'])
+def generate_wordcloud():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    return jsonify({"status": "success", "result": "wordcloud_data"})
 
 # Add a root route for health checks
 @app.route('/')
 def health_check():
     return jsonify({"status": "active", "message": "API is running"}), 200
-
-
-# Explicit OPTIONS handler for preflight
-@app.route('/generate_wordcloud', methods=['OPTIONS'])
-def handle_preflight():
-    return jsonify({"status": "preflight"}), 200
 
 @app.route('/generate_wordcloud', methods=['POST'])
 def generate_wordcloud():
