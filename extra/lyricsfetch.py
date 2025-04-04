@@ -2,9 +2,10 @@ import lyricsgenius
 import time
 from requests.exceptions import Timeout
 import re
+import os
 
 # Initialize Genius with your token
-GENIUS_TOKEN = "N8YhKYgFQDuvrlDgw4FqvUIo2lWZ6XohnOqbG8rhunsrdQp7xJcyMmJLGq9SCW2S"
+GENIUS_TOKEN = os.getenv("GENIUS_TOKEN")
 genius = lyricsgenius.Genius(
     GENIUS_TOKEN,
     timeout=15,

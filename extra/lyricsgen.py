@@ -5,15 +5,15 @@ import time
 from requests.exceptions import Timeout
 
 def get_lyrics(song_name, artist_name, max_retries=3):
-    genius_token = "N8YhKYgFQDuvrlDgw4FqvUIo2lWZ6XohnOqbG8rhunsrdQp7xJcyMmJLGq9SCW2S"
-    #genius_token = os.getenv("GENIUS_API_TOKEN")
-    #if not genius_token:
-    #    raise ValueError("Missing GENIUS_API_TOKEN environment variable")
+   
+    genius_token = os.getenv("GENIUS_API_TOKEN")
+    if not genius_token:
+        raise ValueError("Missing GENIUS_API_TOKEN environment variable")
 
 #export GENIUS_API_TOKEN="your-api-token-here"  # Linux/Mac
 # or 
 #set GENIUS_API_TOKEN="your-api-token-here"  # Windows CMD
-# get genius client access id from notion but its also this - N8YhKYgFQDuvrlDgw4FqvUIo2lWZ6XohnOqbG8rhunsrdQp7xJcyMmJLGq9SCW2S
+# get genius client access id from notion 
 
     # Initialize client with longer timeout
     genius = lyricsgenius.Genius(

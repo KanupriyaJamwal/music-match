@@ -14,9 +14,9 @@ import json
 from pathlib import Path
 
 # Configuration
-SPOTIFY_CLIENT_ID="5ca4086451514b0696e84f251aa5541a" 
-SPOTIFY_CLIENT_SECRET="6da4de03f49d4e0c988bfb36cbe46b76"
-GENIUS_TOKEN = "N8YhKYgFQDuvrlDgw4FqvUIo2lWZ6XohnOqbG8rhunsrdQp7xJcyMmJLGq9SCW2S"
+SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+GENIUS_TOKEN = os.getenv("GENIUS_TOKEN")
 REDIRECT_URI = "http://localhost:8888/callback"
 
 # UI Setup
