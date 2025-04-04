@@ -85,4 +85,4 @@ def download_file(request_id, filename):
 
 port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT not set
 if __name__ == '__main__':
-    app.run(port=port, debug=True)
+    app.run(port=port)
