@@ -24,7 +24,7 @@ function App() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/generate_wordcloud", {
+      const response = await fetch("http://localhost:5001/generate_wordcloud", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
