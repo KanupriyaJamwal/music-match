@@ -1,38 +1,61 @@
-export const fetchData = async () => {
-  const API_URL =
-    process.env.REACT_APP_API_URL || "https://music-match-2jb5.onrender.com";
+// src/services/api.js
+const API_BASE =
+  process.env.REACT_APP_API_URL || "https://music-match-2jb5.onrender.com";
+
+// Unified fetch helper with CORS handling
+const fetchWithCORS = async (endpoint, method = "GET", body = null) => {
+  const url = `${API_BASE}${endpoint}`;
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
 
   try {
-    // Phase 1: Test OPTIONS preflight directly
-    const preflight = await fetch(`${API_URL}/api/data`, {
+    // 1. First verify preflight
+    const preflight = await fetch(url, {
       method: "OPTIONS",
       mode: "cors",
       headers: {
-        "Content-Type": "application/json",
-        Origin: "https://kanupriyajamwal.github.io",
+        ...headers,
+        "Access-Control-Request-Method": method,
+        Origin: window.location.origin,
       },
     });
 
-    console.log("Preflight status:", preflight.status);
+    if (!preflight.ok) {
+      throw new Error(`Preflight failed: ${preflight.status}`);
+    }
 
-    // Phase 2: Make actual request
-    const response = await fetch(`${API_URL}/api/data`, {
-      method: "GET",
+    // 2. Make actual request
+    const response = await fetch(url, {
+      method,
       mode: "cors",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers,
+      body: body ? JSON.stringify(body) : null,
     });
 
-    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} - ${await response.text()}`);
+    }
+
     return await response.json();
   } catch (error) {
-    console.error("Full error:", {
+    console.error(`API Error (${method} ${endpoint}):`, {
       message: error.message,
       stack: error.stack,
     });
     throw error;
   }
+};
+
+// Specific API functions
+export const fetchData = async () => {
+  return fetchWithCORS("/api/data");
+};
+
+export const generateWordcloud = async (spotifyToken) => {
+  return fetchWithCORS("/generate_wordcloud", "POST", {
+    token: spotifyToken,
+  });
 };

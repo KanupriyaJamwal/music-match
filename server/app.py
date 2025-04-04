@@ -13,15 +13,12 @@ app = Flask(__name__)
 # ======== CRITICAL CORS SETUP ========
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-cors = CORS(app, resources={
-    r"/*": {  # Apply to ALL routes
-        "origins": [
-            "https://kanupriyajamwal.github.io",
-            "http://localhost:3000"
-        ],
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True
+# ===== CRITICAL CORS SETUP =====
+CORS(app, resources={
+    r"/generate_wordcloud": {
+        "origins": ["http://localhost:3000", "https://kanupriyajamwal.github.io"],
+        "methods": ["POST", "OPTIONS"],  # Must include OPTIONS
+        "allow_headers": ["Content-Type"]
     }
 })
 
@@ -48,6 +45,12 @@ def api_data():
 @app.route('/')
 def health_check():
     return jsonify({"status": "active", "message": "API is running"}), 200
+
+
+# Explicit OPTIONS handler for preflight
+@app.route('/generate_wordcloud', methods=['OPTIONS'])
+def handle_preflight():
+    return jsonify({"status": "preflight"}), 200
 
 @app.route('/generate_wordcloud', methods=['POST'])
 def generate_wordcloud():
