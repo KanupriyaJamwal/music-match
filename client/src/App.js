@@ -1,53 +1,54 @@
-import React from "react";
-// import { useState, useEffect } from "react";
-// import Auth from "./components/Auth";
-// import Results from "./components/Results";
-// import "./styles.css";
-// import { fetchData } from "./services/api";
-// import { HashRouter as Router } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import Auth from "./components/Auth";
+import Results from "./components/Results";
+import "./styles.css";
+import { fetchData } from "./services/api";
+import { HashRouter as Router } from "react-router-dom";
 
 function App() {
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [isProcessing, setIsProcessing] = useState(false);
-  // const [results, setResults] = useState(null);
-  // const [error, setError] = useState(null);
-  // const [data, setData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [results, setResults] = useState(null);
+  const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   fetchData()
-  //     .then((data) => setData(data))
-  //     .catch(console.error);
-  // }, []);
+  const [data, setData] = useState(null);
 
-  // const handleGenerate = async () => {
-  //   setIsProcessing(true);
-  //   setError(null);
+  useEffect(() => {
+    fetchData()
+      .then((data) => setData(data))
+      .catch(console.error);
+  }, []);
+  // Render your component
 
-  //   try {
-  //     const response = await fetch("http://localhost:5000/generate_wordcloud", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
+  const handleGenerate = async () => {
+    setIsProcessing(true);
+    setError(null);
 
-  //     const data = await response.json();
+    try {
+      const response = await fetch("http://localhost:5000/generate_wordcloud", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  //     if (data.success) {
-  //       setResults(data);
-  //     } else {
-  //       setError(data.error || "Failed to generate word cloud");
-  //     }
-  //   } catch (err) {
-  //     setError(err.message);
-  //   } finally {
-  //     setIsProcessing(false);
-  //   }
-  // };
+      const data = await response.json();
+
+      if (data.success) {
+        setResults(data);
+      } else {
+        setError(data.error || "Failed to generate word cloud");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className="app">
-      {/* <header>
+      <header>
         <h1>Spotify Lyrics Word Cloud</h1>
         <p>Generate a word cloud from your top Spotify tracks</p>
       </header>
@@ -68,9 +69,7 @@ function App() {
             )}
           </div>
         )}
-      </main> */}
-      <h1>Hello World</h1>
-      <p>Basic test page for deployment verification</p>
+      </main>
     </div>
   );
 }
