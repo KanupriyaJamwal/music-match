@@ -10,12 +10,16 @@ import time
 app = Flask(__name__)
 
 # Allow your GitHub Pages domain
-CORS(app, resources={
+# ======== CRITICAL CORS SETUP ========
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+cors = CORS(app, resources={
     r"/api/*": {
         "origins": ["https://kanupriyajamwal.github.io", "http://localhost:3000"],
-        "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],  # Explicitly include OPTIONS
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["*"],  # Temporary wildcard for testing
+        "supports_credentials": True,
+        "max_age": 86400
     }
 })
 
@@ -23,14 +27,20 @@ CORS(app, resources={
 PROCESSING_DIR = os.path.join(tempfile.gettempdir(), 'spotify_wordcloud')
 os.makedirs(PROCESSING_DIR, exist_ok=True)
 
-# Add explicit OPTIONS handler for preflight
-@app.route('/api/data', methods=['OPTIONS'])
-def handle_options():
-    return {}, 204  # Empty response with 204 status
+@app.after_request
+def after_request(response):
+    # Manually set headers as final fallback
+    response.headers.add('Access-Control-Allow-Origin', 'https://kanupriyajamwal.github.io')
+    response.headers.add('Access-Control-Allow-Headers', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
-@app.route('/api/data', methods=['GET'])
-def get_data():
-    return jsonify({"status": "success", "data": "Your response"})
+@app.route('/api/data', methods=['GET', 'OPTIONS'])
+def api_data():
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "preflight"}), 200  # Explicit OPTIONS response
+    return jsonify({"data": "Successful CORS response"})
 
 # Add a root route for health checks
 @app.route('/')
