@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Auth from "./components/Auth";
 import Results from "./components/Results";
 import "./styles.css";
+import { fetchData } from "./services/api";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetchData()
+      .then((data) => setData(data))
+      .catch(console.error);
+  }, []);
+  // Render your component
 
   const handleGenerate = async () => {
     setIsProcessing(true);

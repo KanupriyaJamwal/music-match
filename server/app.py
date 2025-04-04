@@ -8,8 +8,15 @@ import shutil
 import time
 
 app = Flask(__name__)
-CORS(app)
-
+# Allow your GitHub Pages domain
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "https://kanupriyajamwal.github.io",
+            "http://localhost:3000"  # For development
+        ]
+    }
+})
 # Temporary directory for processing
 PROCESSING_DIR = os.path.join(tempfile.gettempdir(), 'spotify_wordcloud')
 os.makedirs(PROCESSING_DIR, exist_ok=True)
