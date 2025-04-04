@@ -11,9 +11,9 @@ app = Flask(__name__)
 
 # Allow your GitHub Pages domain
 CORS(app, resources={
-    r"/*": {
+    r"/api/*": {
         "origins": [
-            "https://kanupriyajamwal.github.io",
+            "https://kanupriyajamwal.github.io",  # GitHub Pages
             "http://localhost:3000"  # For development
         ]
     }
@@ -22,6 +22,12 @@ CORS(app, resources={
 PROCESSING_DIR = os.path.join(tempfile.gettempdir(), 'spotify_wordcloud')
 os.makedirs(PROCESSING_DIR, exist_ok=True)
 
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    return jsonify({
+        "status": "success",
+        "message": "API is working"
+    })
 
 # Add a root route for health checks
 @app.route('/')
