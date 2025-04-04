@@ -3,7 +3,6 @@ import Auth from "./components/Auth";
 import Results from "./components/Results";
 import "./styles.css";
 import { fetchData } from "./services/api";
-import { HashRouter as Router } from "react-router-dom";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
