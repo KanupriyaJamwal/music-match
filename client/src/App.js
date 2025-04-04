@@ -3,19 +3,6 @@ import Auth from "./components/Auth";
 import Results from "./components/Results";
 import "./styles.css";
 import { fetchData } from "./services/api";
-import { handleGenerate } from "./services/api";
-// App.js or your component
-import { generateWordcloud } from "./services/api";
-
-// When calling the function:
-const handleGenerate = async () => {
-  try {
-    const results = await generateWordcloud(spotifyAccessToken); // Pass the token
-    // Handle results
-  } catch (error) {
-    // Handle error
-  }
-};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,9 +14,6 @@ function App() {
 
   useEffect(() => {
     fetchData()
-      .then((data) => setData(data))
-      .catch(console.error);
-    handleGenerate()
       .then((data) => setData(data))
       .catch(console.error);
   }, []);
