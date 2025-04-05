@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Auth from "./components/Auth";
 import Results from "./components/Results";
 import "./styles.css";
-import { fetchData } from "./services/api";
+import { fetchData, generateWordcloud } from "./services/api";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,15 +23,30 @@ function App() {
     setIsProcessing(true);
     setError(null);
 
-    try {
-      const response = await fetch("http://localhost:5001/generate_wordcloud", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    //try {
+    //  const response = await fetch("http://localhost:5001/generate_wordcloud", {
+    //    method: "POST",
+    //    headers: {
+    //      "Content-Type": "application/json",
+    //    },
+    //  });
 
-      const data = await response.json();
+    //  const data = await response.json();
+
+    //  if (data.success) {
+    //    setResults(data);
+    //  } else {
+    //    setError(data.error || "Failed to generate word cloud");
+    //  }
+    //} catch (err) {
+    //  setError(err.message);
+    //} finally {
+    //  setIsProcessing(false);
+    //}
+    //};
+
+    try {
+      const data = await generateWordcloud();
 
       if (data.success) {
         setResults(data);

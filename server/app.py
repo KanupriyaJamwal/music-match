@@ -19,7 +19,7 @@ CORS(app, resources={
             "https://kanupriyajamwal.github.io"  # Production
         ],
         "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
-        "allow_headers": ["*"],
+        "allow_headers": ["Content-Type", "Authorization"],
         "expose_headers": ["*"],
         "supports_credentials": True,
         "max_age": 600
@@ -51,8 +51,9 @@ def api_data():
 def health_check():
     return jsonify({"status": "active", "message": "API is running"}), 200
 
-@app.route('/generate_wordcloud', methods=['POST', 'OPTIONS'])  # Combined methods
+@app.route('/generate_wordcloud', methods=['POST', 'OPTIONS'])
 def generate_wordcloud():
+    # Handle OPTIONS request explicitly
     if request.method == 'OPTIONS':
         return jsonify({}), 200
         
@@ -99,8 +100,13 @@ def download_file(request_id, filename):
     if not os.path.exists(filepath):
         return jsonify({'error': 'File not found'}), 404
         
-    return send_file(filepath, as_attachment=True)
+    # For images, use mimetype='image/png' and as_attachment=False
+    return send_file(
+        filepath,
+        mimetype='image/png',
+        as_attachment=False  # <- Crucial for displaying images in browser
+    )
 
-port = int(os.environ.get("PORT", 5001))  # Default to 8000 if PORT not set
+port = int(os.environ.get("PORT", 5001))  # Default to 5001 if PORT not set
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)  # Changed to 8001
+    app.run(host='0.0.0.0', port=5001, debug=True)  # Changed to 5001
