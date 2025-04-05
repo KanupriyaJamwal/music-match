@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import shutil
 import time
+from spotify_wordcloud import generate_word_cloud
 
 app = Flask(__name__)
 
@@ -67,35 +68,41 @@ def generate_wordcloud():
         
     try:
         # Your existing POST logic here
-        request_id = str(int(time.time()))
-        work_dir = os.path.join(PROCESSING_DIR, request_id)
-        os.makedirs(work_dir, exist_ok=True)
+        #request_id = str(int(time.time()))
+        #work_dir = os.path.join(PROCESSING_DIR, request_id)
+        #os.makedirs(work_dir, exist_ok=True)
         
-        script_path = os.path.join(work_dir, 'spotify_wordcloud.py')
-        shutil.copyfile('spotify_wordcloud.py', script_path)
+        #script_path = os.path.join(work_dir, 'spotify_wordcloud.py')
+        #shutil.copyfile('spotify_wordcloud.py', script_path)
         
-        result = subprocess.run(
-            [sys.executable, script_path],
-            capture_output=True,
-            text=True,
-            cwd=work_dir
-        )
+        #result = subprocess.run(
+        #    [sys.executable, script_path],
+        #    capture_output=True,
+        #    text=True,
+        #    cwd=work_dir
+        #)
         
-        if result.returncode != 0:
-            return jsonify({'success': False, 'error': result.stderr}), 500
+        #if result.returncode != 0:
+        #    return jsonify({'success': False, 'error': result.stderr}), 500
             
-        output_files = {}
-        for filename in ['top_50_lyrics.txt', 'lyrics_wordcloud.png']:
-            filepath = os.path.join(work_dir, filename)
-            if os.path.exists(filepath):
+        #output_files = {}
+        #for filename in ['top_50_lyrics.txt', 'lyrics_wordcloud.png']:
+        #    filepath = os.path.join(work_dir, filename)
+        #    if os.path.exists(filepath):
                 # Store just the path components needed for download
-                output_files[filename] = f'{request_id}/{filename}'
+        #        output_files[filename] = f'{request_id}/{filename}'
         
         return jsonify({
+            #'success': True,
+            #'output': result.stdout,
+            #'files': output_files,
+            #"wordcloud": "base64_image_data"
             'success': True,
-            'output': result.stdout,
-            'files': output_files,
-            "wordcloud": "base64_image_data"  # You might want to actually include base64 data here
+            'message': 'This is a test response',
+            'files': {
+                'lyrics_wordcloud.png': 'test/test.png',
+                'top_50_lyrics.txt': 'test/test.txt'
+            }
         })
         
     except Exception as e:
