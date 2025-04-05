@@ -62,11 +62,36 @@ def health_check():
     return jsonify({"status": "active", "message": "API is running"}), 200
 
 @app.route('/generate_wordcloud', methods=['POST', 'OPTIONS'])
-def generate_wordcloud():
+def generate_wordcloud_endpoint():
     if request.method == 'OPTIONS':
         return jsonify({}), 200
         
     try:
+        request_id = str(int(time.time()))
+        work_dir = os.path.join(PROCESSING_DIR, request_id)
+        os.makedirs(work_dir, exist_ok=True)
+        
+        # Call the function directly instead of using subprocess
+        result = generate_word_cloud(work_dir)
+        
+        output_files = {}
+        for filename in ['top_50_lyrics.txt', 'lyrics_wordcloud.png']:
+            filepath = os.path.join(work_dir, filename)
+            if os.path.exists(filepath):
+                output_files[filename] = f'{request_id}/{filename}'
+        
+        return jsonify({
+            'success': True,
+            'output': result,
+            'files': output_files
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+#def generate_wordcloud():
+#    if request.method == 'OPTIONS':
+#        return jsonify({}), 200
+        
+#    try:
         # Your existing POST logic here
         #request_id = str(int(time.time()))
         #work_dir = os.path.join(PROCESSING_DIR, request_id)
@@ -92,21 +117,21 @@ def generate_wordcloud():
                 # Store just the path components needed for download
         #        output_files[filename] = f'{request_id}/{filename}'
         
-        return jsonify({
+    #    return jsonify({
             #'success': True,
             #'output': result.stdout,
             #'files': output_files,
             #"wordcloud": "base64_image_data"
-            'success': True,
-            'message': 'This is a test response',
-            'files': {
-                'lyrics_wordcloud.png': 'test/test.png',
-                'top_50_lyrics.txt': 'test/test.txt'
-            }
-        })
+    #        'success': True,
+    #        'message': 'This is a test response',
+    #        'files': {
+    #            'lyrics_wordcloud.png': 'test/test.png',
+    #            'top_50_lyrics.txt': 'test/test.txt'
+    #        }
+    #    })
         
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    #except Exception as e:
+    #    return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/download/<request_id>/<filename>', methods=['GET'])
 def download_file(request_id, filename):
