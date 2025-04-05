@@ -66,20 +66,13 @@ def generate_wordcloud():
         return jsonify({}), 200
         
     try:
-        # Get request data for debugging
-        app.logger.info(f"Request received: {request.data}")
-        
         # Your existing POST logic here
         request_id = str(int(time.time()))
         work_dir = os.path.join(PROCESSING_DIR, request_id)
         os.makedirs(work_dir, exist_ok=True)
         
-        app.logger.info(f"Work directory created: {work_dir}")
-        
         script_path = os.path.join(work_dir, 'spotify_wordcloud.py')
         shutil.copyfile('spotify_wordcloud.py', script_path)
-        
-        app.logger.info(f"Script copied to: {script_path}")
         
         result = subprocess.run(
             [sys.executable, script_path],
@@ -88,32 +81,24 @@ def generate_wordcloud():
             cwd=work_dir
         )
         
-        app.logger.info(f"Script execution completed with return code: {result.returncode}")
-        app.logger.info(f"Script stdout: {result.stdout}")
-        app.logger.info(f"Script stderr: {result.stderr}")
-        
         if result.returncode != 0:
-            error_msg = result.stderr
-            app.logger.error(f"Script execution failed: {error_msg}")
-            return jsonify({'success': False, 'error': error_msg}), 500
+            return jsonify({'success': False, 'error': result.stderr}), 500
             
         output_files = {}
         for filename in ['top_50_lyrics.txt', 'lyrics_wordcloud.png']:
             filepath = os.path.join(work_dir, filename)
             if os.path.exists(filepath):
-                output_files[filename] = f'/download/{request_id}/{filename}'
-        
-        app.logger.info(f"Output files: {output_files}")
+                # Store just the path components needed for download
+                output_files[filename] = f'{request_id}/{filename}'
         
         return jsonify({
             'success': True,
             'output': result.stdout,
             'files': output_files,
-            "wordcloud": "base64_image_data"
+            "wordcloud": "base64_image_data"  # You might want to actually include base64 data here
         })
         
     except Exception as e:
-        app.logger.error(f"Exception in generate_wordcloud: {str(e)}", exc_info=True)
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/download/<request_id>/<filename>', methods=['GET'])
