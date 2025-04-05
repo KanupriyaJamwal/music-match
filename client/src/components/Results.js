@@ -12,7 +12,7 @@ const Results = ({ data }) => {
     // <WordCloud imageUrl={data.files["lyrics_wordcloud.png"]} />
 
     const filePath = data.files[filename].replace("/download/", "");
-    window.open(`http://localhost:5000/download/${filePath}`, "_blank");
+    window.open(`http://localhost:5001/download/${filePath}`, "_blank");
   };
 
   return (
@@ -20,7 +20,7 @@ const Results = ({ data }) => {
       <h2>Your Word Cloud is Ready!</h2>
       <div className="output">
         <WordCloud
-          imageUrl={`http://localhost:5000/download/${data.files[
+          imageUrl={`http://localhost:5001/download/${data.files[
             "lyrics_wordcloud.png"
           ].replace("/download/", "")}`}
         />

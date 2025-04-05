@@ -46,7 +46,18 @@ function App() {
     //};
 
     try {
-      const data = await generateWordcloud();
+      const response = await fetch(
+        "https://music-match-2jb5.onrender.com/generate_wordcloud",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}), // Send an empty object at minimum
+        }
+      );
+
+      const data = await response.json();
 
       if (data.success) {
         setResults(data);
