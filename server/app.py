@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import shutil
 import time
-from spotify_wordcloud import generate_word_cloud
+from spotify_wordcloud import generate_wordcloud
 
 app = Flask(__name__)
 
@@ -72,7 +72,7 @@ def generate_wordcloud_endpoint():
         os.makedirs(work_dir, exist_ok=True)
         
         # Call the function directly instead of using subprocess
-        result = generate_word_cloud(work_dir)
+        result = generate_wordcloud(work_dir)
         
         output_files = {}
         for filename in ['top_50_lyrics.txt', 'lyrics_wordcloud.png']:
